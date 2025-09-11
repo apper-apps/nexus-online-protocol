@@ -1,0 +1,37 @@
+[
+  {
+    "Id": 1,
+    "name": "TechCorp Solutions",
+    "parentCompany": "Global Tech Holdings"
+  },
+  {
+    "Id": 2,
+    "name": "InnovateNow Inc",
+    "parentCompany": ""
+  },
+  {
+    "Id": 3,
+    "name": "DataDriven Analytics",
+    "parentCompany": "Analytics Group Ltd"
+  },
+  {
+    "Id": 4,
+    "name": "SecureShield Systems",
+    "parentCompany": "Security Enterprises"
+  },
+  {
+    "Id": 5,
+    "name": "CloudFirst Technologies",
+    "parentCompany": "Global Tech Holdings"
+  },
+  {
+    "Id": 6,
+    "name": "DigitalTransform Ltd",
+    "parentCompany": ""
+  },
+  {
+    "Id": 7,
+    "name": "SmartSolutions Co",
+    "parentCompany": "Analytics Group Ltd"
+  }
+]
