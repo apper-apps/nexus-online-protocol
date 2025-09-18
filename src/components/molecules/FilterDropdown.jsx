@@ -3,7 +3,7 @@ import Button from "@/components/atoms/Button"
 import ApperIcon from "@/components/ApperIcon"
 import { cn } from "@/utils/cn"
 
-const FilterDropdown = ({ title, options, selectedValues, onSelectionChange }) => {
+const FilterDropdown = ({ title, options, selectedValues = [], onSelectionChange }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
 
