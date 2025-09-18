@@ -111,7 +111,7 @@ const ProjectTaskForm = ({ initialData, onSubmit, onCancel }) => {
     }
 
     // Phone validation
-    if (formData.contactPhone && !/^\+?[\d\s\-\(\)]+$/.test(formData.contactPhone)) {
+if (formData.contactPhone && !/^\+?[\d\s\-()]+$/.test(formData.contactPhone)) {
       newErrors.contactPhone = "Please enter a valid phone number"
     }
 
