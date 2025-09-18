@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react"
-import Button from "@/components/atoms/Button"
-import Input from "@/components/atoms/Input"
-import Select from "@/components/atoms/Select"
-import DatePicker from "@/components/molecules/DatePicker"
-import ApperIcon from "@/components/ApperIcon"
-import { cn } from "@/utils/cn"
+import React, { useEffect, useState } from "react";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Select from "@/components/atoms/Select";
+import DatePicker from "@/components/molecules/DatePicker";
+import { cn } from "@/utils/cn";
+import personnel from "@/services/mockData/personnel.json";
+import projectTasks from "@/services/mockData/projectTasks.json";
+import contracts from "@/services/mockData/contracts.json";
+import projects from "@/services/mockData/projects.json";
+import customers from "@/services/mockData/customers.json";
 
 const ProjectTaskForm = ({ initialData, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -487,16 +492,16 @@ if (formData.contactPhone && !/^\+?[\d\s\-()]+$/.test(formData.contactPhone)) {
           </div>
         </div>
       </div>
-
-      <div className="flex justify-end space-x-3 pt-6 border-t">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" variant="primary">
-          {initialData ? "Update Project Task" : "Create Project Task"}
-        </Button>
-      </div>
-    </form>
+<div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary">
+            {initialData ? "Update Project Task" : "Create Project Task"}
+          </Button>
+        </div>
+      </form>
+    </div>
   )
 }
 

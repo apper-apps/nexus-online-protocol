@@ -137,14 +137,29 @@ const ProjectTaskManagement = () => {
     return `${symbols[currency] || currency} ${amount?.toLocaleString() || "0"}`
   }
 
-  const columns = [
+const columns = [
     {
       key: "projectName",
       label: "Project Name",
       sortable: true,
       render: (projectTask) => (
-        <div className="font-medium text-gray-900">
-          {projectTask.projectName}
+        <div className="min-w-[200px]">
+          <div className="font-medium text-gray-900 truncate">
+            {projectTask.projectName || "Untitled Project"}
+          </div>
+          <div className="text-xs text-gray-500 truncate mt-1">
+            {projectTask.projectDescription?.slice(0, 60) || "No description"}
+            {projectTask.projectDescription?.length > 60 ? "..." : ""}
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "assignedTo",
+      label: "Assigned To",
+      render: (projectTask) => (
+        <div className="text-gray-900 font-medium">
+          {projectTask.assignedTo || "Unassigned"}
         </div>
       ),
     },
@@ -157,7 +172,7 @@ const ProjectTaskManagement = () => {
           getPriorityBadgeVariant(projectTask.projectPriority) === "warning" ? "bg-yellow-100 text-yellow-800" :
           "bg-gray-100 text-gray-800"
         }`}>
-          {projectTask.projectPriority}
+          {projectTask.projectPriority || "Not Set"}
         </div>
       ),
     },
@@ -170,7 +185,19 @@ const ProjectTaskManagement = () => {
           getStatusBadgeVariant(projectTask.status) === "primary" ? "bg-blue-100 text-blue-800" :
           "bg-gray-100 text-gray-800"
         }`}>
-          {projectTask.status}
+          {projectTask.status || "Not Started"}
+        </div>
+      ),
+    },
+    {
+      key: "numberOfTeamMembers",
+      label: "Team Size",
+      render: (projectTask) => (
+        <div className="flex items-center space-x-1">
+          <ApperIcon name="Users" className="h-4 w-4 text-gray-400" />
+          <span className="text-gray-900">
+            {projectTask.numberOfTeamMembers || 0}
+          </span>
         </div>
       ),
     },
@@ -178,23 +205,32 @@ const ProjectTaskManagement = () => {
       key: "allocatedBudget",
       label: "Budget",
       render: (projectTask) => (
-        <span className="text-gray-900 font-medium">
-          {formatCurrency(projectTask.allocatedBudget, projectTask.allocatedBudgetCurrency)}
-        </span>
+        <div className="text-right">
+          <div className="text-gray-900 font-medium">
+            {formatCurrency(projectTask.allocatedBudget || 0, projectTask.allocatedBudgetCurrency || "USD")}
+          </div>
+          {projectTask.estimatedBudget && projectTask.estimatedBudget !== projectTask.allocatedBudget && (
+            <div className="text-xs text-gray-500">
+              Est: {formatCurrency(projectTask.estimatedBudget, projectTask.allocatedBudgetCurrency || "USD")}
+            </div>
+          )}
+        </div>
       ),
     },
     {
       key: "progressRange",
       label: "Progress",
       render: (projectTask) => (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 min-w-[120px]">
           <div className="w-16 bg-gray-200 rounded-full h-2">
             <div 
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${projectTask.progressRange}%` }}
+              style={{ width: `${projectTask.progressRange || 0}%` }}
             />
           </div>
-          <span className="text-sm text-gray-600">{projectTask.progressRange}%</span>
+          <span className="text-sm text-gray-600 min-w-[35px]">
+            {projectTask.progressRange || 0}%
+          </span>
         </div>
       ),
     },
@@ -203,9 +239,23 @@ const ProjectTaskManagement = () => {
       label: "Start Date",
       sortable: true,
       render: (projectTask) => (
-        <span className="text-gray-600">
-          {new Date(projectTask.startDate).toLocaleDateString()}
-        </span>
+        <div className="text-gray-600 text-sm">
+          {projectTask.startDate 
+            ? new Date(projectTask.startDate).toLocaleDateString()
+            : "Not Set"}
+        </div>
+      ),
+    },
+    {
+      key: "deadline",
+      label: "Deadline",
+      sortable: true,
+      render: (projectTask) => (
+        <div className="text-gray-600 text-sm">
+          {projectTask.deadline 
+            ? new Date(projectTask.deadline).toLocaleDateString()
+            : "No Deadline"}
+        </div>
       ),
     },
     {
@@ -217,7 +267,7 @@ const ProjectTaskManagement = () => {
             variant="ghost"
             size="sm"
             onClick={() => handleEditProjectTask(projectTask)}
-            className="text-blue-600 hover:text-blue-800"
+            className="text-blue-600 hover:text-blue-800 hover:bg-blue-50"
           >
             <ApperIcon name="Edit" className="h-4 w-4" />
           </Button>
@@ -225,7 +275,7 @@ const ProjectTaskManagement = () => {
             variant="ghost"
             size="sm"
             onClick={() => handleDeleteProjectTask(projectTask.Id)}
-            className="text-red-600 hover:text-red-800"
+            className="text-red-600 hover:text-red-800 hover:bg-red-50"
           >
             <ApperIcon name="Trash2" className="h-4 w-4" />
           </Button>
