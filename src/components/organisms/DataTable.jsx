@@ -52,8 +52,8 @@ const DataTable = ({
       return new Date(value).toLocaleDateString()
     }
     
-    if (column.render) {
-      return column.render(value)
+if (column.render) {
+      return column.render(row)
     }
     
     return value || "-"
@@ -119,7 +119,7 @@ const DataTable = ({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-gray-50/80 to-gray-100/80">
             <tr>
-              {columns.map((column, index) => (
+{columns.map((column, index) => (
                 <th
                   key={index}
                   className={cn(
