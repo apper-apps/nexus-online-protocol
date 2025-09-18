@@ -23,17 +23,22 @@ const Sidebar = () => {
       href: "/customers",
       icon: "Users",
     },
-    {
-      name: "R&D Projects",
-      href: "/projects",
-      icon: "Lightbulb",
-    },
-    {
-      name: "Personnel",
-      href: "/personnel",
-      icon: "UserCog",
-    },
-  ]
+{
+name: "R&D Projects",
+href: "/projects",
+icon: "Lightbulb",
+},
+{
+name: "Project & Task Management",
+href: "/project-task-management",
+icon: "ClipboardList",
+},
+{
+name: "Personnel",
+href: "/personnel",
+icon: "UserCog",
+},
+]
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">

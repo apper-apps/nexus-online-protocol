@@ -9,21 +9,23 @@ const Layout = ({ children }) => {
   const location = useLocation()
 
   const getPageTitle = () => {
-    switch (location.pathname) {
-      case "/dashboard":
-        return "Dashboard"
-      case "/contracts":
-        return "Contract Management"
-      case "/customers":
-        return "Customer Management"
-      case "/projects":
-        return "R&D Projects"
-      case "/personnel":
-        return "Personnel Management"
-      default:
-        return "Nexus ERP"
-    }
-  }
+switch (location.pathname) {
+case "/dashboard":
+return "Dashboard"
+case "/contracts":
+return "Contract Management"
+case "/customers":
+return "Customer Management"
+case "/projects":
+return "R&D Projects"
+case "/project-task-management":
+return "Project & Task Management"
+case "/personnel":
+return "Personnel Management"
+default:
+return "Nexus ERP"
+}
+}
 
   return (
     <div className="h-screen flex overflow-hidden bg-gray-100">
