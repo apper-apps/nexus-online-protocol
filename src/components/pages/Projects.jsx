@@ -112,20 +112,22 @@ const Projects = () => {
     }
   }
 
-  const getStatusBadgeVariant = (project) => {
-    if (project.actualEndDate) return "success"
+const getStatusBadgeVariant = (project) => {
+    if (!project) return "primary"
+    if (project?.actualEndDate) return "success"
     const now = new Date()
-    const endDate = new Date(project.estimatedEndDate)
+    const endDate = new Date(project?.estimatedEndDate)
     if (endDate < now) return "danger"
     const warningThreshold = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000)
     if (now > warningThreshold) return "warning"
     return "primary"
   }
 
-  const getProjectStatus = (project) => {
-    if (project.actualEndDate) return "Completed"
+const getProjectStatus = (project) => {
+    if (!project) return "Unknown"
+    if (project?.actualEndDate) return "Completed"
     const now = new Date()
-    const endDate = new Date(project.estimatedEndDate)
+    const endDate = new Date(project?.estimatedEndDate)
     if (endDate < now) return "Overdue"
     const warningThreshold = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000)
     if (now > warningThreshold) return "Near Deadline"
