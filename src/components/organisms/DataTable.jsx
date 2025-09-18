@@ -129,7 +129,7 @@ const renderCellValue = (value, column, row) => {
                   onClick={() => column.sortable !== false && handleSort(column.key)}
                 >
                   <div className="flex items-center">
-                    <span>{column.title}</span>
+                    <span>{column.label || column.title}</span>
                     {sortable && column.sortable !== false && (
                       <div className="ml-2 flex flex-col">
                         <ApperIcon
@@ -155,23 +155,20 @@ const renderCellValue = (value, column, row) => {
                   </div>
                 </th>
               ))}
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
             </tr>
           </thead>
           <tbody className="bg-white/50 divide-y divide-gray-200">
-            {sortedData.map((row, rowIndex) => (
+{sortedData.map((row, rowIndex) => (
               <motion.tr
                 key={row.Id || rowIndex}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: rowIndex * 0.05 }}
                 className="hover:bg-gray-50/60 transition-colors duration-150"
->
-{columns.map((column, colIndex) => (
+              >
+                {columns.map((column, colIndex) => (
                   <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {renderCellValue(row?.[column.key], column, row)}
+                    {column.render ? column.render(row) : renderCellValue(row?.[column.key], column, row)}
                   </td>
                 ))}
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
