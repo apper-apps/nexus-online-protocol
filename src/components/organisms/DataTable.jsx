@@ -118,8 +118,8 @@ const renderCellValue = (value, column, row) => {
       <div className="overflow-x-auto table-scrollbar">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-gray-50/80 to-gray-100/80">
-            <tr>
-{columns.map((column, index) => (
+<tr>
+              {columns.map((column, index) => (
                 <th
                   key={index}
                   className={cn(
@@ -168,8 +168,8 @@ const renderCellValue = (value, column, row) => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: rowIndex * 0.05 }}
                 className="hover:bg-gray-50/60 transition-colors duration-150"
-              >
-{columns.map((column, colIndex) => (
+>
+                {columns.map((column, colIndex) => (
                   <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {renderCellValue(row[column.key], column, row)}
                   </td>
