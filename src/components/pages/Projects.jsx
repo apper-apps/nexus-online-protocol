@@ -156,8 +156,8 @@ const getProjectStatus = (project) => {
     },
     { 
       key: "totalQuota", 
-      title: "Total Personnel",
-      render: (value, row) => `${row.rdQuota + row.supportQuota}`
+title: "Total Personnel",
+      render: (value, row) => `${(row?.rdQuota || 0) + (row?.supportQuota || 0)}`
     }
   ]
 
