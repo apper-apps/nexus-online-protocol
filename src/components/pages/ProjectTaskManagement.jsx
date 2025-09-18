@@ -145,10 +145,10 @@ const columns = [
       render: (projectTask) => (
         <div className="min-w-[200px]">
           <div className="font-medium text-gray-900 truncate">
-            {projectTask.projectName || "Untitled Project"}
+            {projectTask.projectName}
           </div>
           <div className="text-xs text-gray-500 truncate mt-1">
-            {projectTask.projectDescription?.slice(0, 60) || "No description"}
+            {projectTask.projectDescription?.slice(0, 60)}
             {projectTask.projectDescription?.length > 60 ? "..." : ""}
           </div>
         </div>
@@ -159,7 +159,7 @@ const columns = [
       label: "Assigned To",
       render: (projectTask) => (
         <div className="text-gray-900 font-medium">
-          {projectTask.assignedTo || "Unassigned"}
+          {projectTask.assignedTo}
         </div>
       ),
     },
@@ -172,7 +172,7 @@ const columns = [
           getPriorityBadgeVariant(projectTask.projectPriority) === "warning" ? "bg-yellow-100 text-yellow-800" :
           "bg-gray-100 text-gray-800"
         }`}>
-          {projectTask.projectPriority || "Not Set"}
+          {projectTask.projectPriority}
         </div>
       ),
     },
@@ -185,7 +185,7 @@ const columns = [
           getStatusBadgeVariant(projectTask.status) === "primary" ? "bg-blue-100 text-blue-800" :
           "bg-gray-100 text-gray-800"
         }`}>
-          {projectTask.status || "Not Started"}
+          {projectTask.status}
         </div>
       ),
     },
@@ -196,7 +196,7 @@ const columns = [
         <div className="flex items-center space-x-1">
           <ApperIcon name="Users" className="h-4 w-4 text-gray-400" />
           <span className="text-gray-900">
-            {projectTask.numberOfTeamMembers || 0}
+            {projectTask.numberOfTeamMembers}
           </span>
         </div>
       ),
@@ -207,11 +207,11 @@ const columns = [
       render: (projectTask) => (
         <div className="text-right">
           <div className="text-gray-900 font-medium">
-            {formatCurrency(projectTask.allocatedBudget || 0, projectTask.allocatedBudgetCurrency || "USD")}
+            {formatCurrency(projectTask.allocatedBudget, projectTask.allocatedBudgetCurrency)}
           </div>
           {projectTask.estimatedBudget && projectTask.estimatedBudget !== projectTask.allocatedBudget && (
             <div className="text-xs text-gray-500">
-              Est: {formatCurrency(projectTask.estimatedBudget, projectTask.allocatedBudgetCurrency || "USD")}
+              Est: {formatCurrency(projectTask.estimatedBudget, projectTask.allocatedBudgetCurrency)}
             </div>
           )}
         </div>
@@ -225,11 +225,11 @@ const columns = [
           <div className="w-16 bg-gray-200 rounded-full h-2">
             <div 
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${projectTask.progressRange || 0}%` }}
+              style={{ width: `${projectTask.progressRange}%` }}
             />
           </div>
           <span className="text-sm text-gray-600 min-w-[35px]">
-            {projectTask.progressRange || 0}%
+            {projectTask.progressRange}%
           </span>
         </div>
       ),
