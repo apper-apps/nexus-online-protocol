@@ -42,7 +42,7 @@ const DataTable = ({
     })
   }, [data, sortField, sortDirection])
 
-  const renderCellValue = (value, column) => {
+const renderCellValue = (value, column, row) => {
     if (column.type === "badge") {
       const variant = column.getBadgeVariant ? column.getBadgeVariant(value) : "default"
       return <Badge variant={variant}>{value}</Badge>
@@ -52,7 +52,7 @@ const DataTable = ({
       return new Date(value).toLocaleDateString()
     }
     
-if (column.render) {
+    if (column.render) {
       return column.render(row)
     }
     
@@ -169,9 +169,9 @@ if (column.render) {
                 transition={{ delay: rowIndex * 0.05 }}
                 className="hover:bg-gray-50/60 transition-colors duration-150"
               >
-                {columns.map((column, colIndex) => (
+{columns.map((column, colIndex) => (
                   <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {renderCellValue(row[column.key], column)}
+                    {renderCellValue(row[column.key], column, row)}
                   </td>
                 ))}
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
