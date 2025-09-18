@@ -51,13 +51,13 @@ const renderCellValue = (value, column, row) => {
     if (column.type === "date" && value) {
       return new Date(value).toLocaleDateString()
     }
-}
     
     if (column.render) {
       return column.render(value, row)
     }
     
     return value || "-"
+  }
 
   if (loading) {
     return (
