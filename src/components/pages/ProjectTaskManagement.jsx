@@ -68,8 +68,26 @@ const ProjectTaskManagement = () => {
   }
 
   const handleCreateProjectTask = async (projectTaskData) => {
-    try {
-      const newProjectTask = await projectTaskService.create(projectTaskData)
+try {
+      // Transform data for API compatibility
+      const transformedData = {
+        ...projectTaskData,
+        departments_involved_c: Array.isArray(projectTaskData.departmentsInvolved) 
+          ? projectTaskData.departmentsInvolved.join(',') 
+          : projectTaskData.departmentsInvolved || '',
+        progress_range_c: projectTaskData.progressRange?.toString() || '0',
+        project_tags_c: Array.isArray(projectTaskData.projectTags) 
+          ? projectTaskData.projectTags.join(',') 
+          : projectTaskData.projectTags || '',
+        include_risk_assessment_c: Array.isArray(projectTaskData.includeRiskAssessment) 
+          ? projectTaskData.includeRiskAssessment.join(',') 
+          : projectTaskData.includeRiskAssessment?.toString() || 'false',
+        Tags: Array.isArray(projectTaskData.projectTags) 
+          ? projectTaskData.projectTags.join(',') 
+          : projectTaskData.projectTags || ''
+      }
+      
+      const newProjectTask = await projectTaskService.create(transformedData)
       setProjectTasks(prev => [newProjectTask, ...prev])
       setIsModalOpen(false)
       toast.success("Project task created successfully!")
@@ -85,8 +103,26 @@ const ProjectTaskManagement = () => {
   }
 
   const handleUpdateProjectTask = async (projectTaskData) => {
-    try {
-      const updatedProjectTask = await projectTaskService.update(editingProjectTask.Id, projectTaskData)
+try {
+      // Transform data for API compatibility
+      const transformedData = {
+        ...projectTaskData,
+        departments_involved_c: Array.isArray(projectTaskData.departmentsInvolved) 
+          ? projectTaskData.departmentsInvolved.join(',') 
+          : projectTaskData.departmentsInvolved || '',
+        progress_range_c: projectTaskData.progressRange?.toString() || '0',
+        project_tags_c: Array.isArray(projectTaskData.projectTags) 
+          ? projectTaskData.projectTags.join(',') 
+          : projectTaskData.projectTags || '',
+        include_risk_assessment_c: Array.isArray(projectTaskData.includeRiskAssessment) 
+          ? projectTaskData.includeRiskAssessment.join(',') 
+          : projectTaskData.includeRiskAssessment?.toString() || 'false',
+        Tags: Array.isArray(projectTaskData.projectTags) 
+          ? projectTaskData.projectTags.join(',') 
+          : projectTaskData.projectTags || ''
+      }
+      
+      const updatedProjectTask = await projectTaskService.update(editingProjectTask.Id, transformedData)
       setProjectTasks(prev => prev.map(task => 
         task.Id === editingProjectTask.Id ? updatedProjectTask : task
       ))
