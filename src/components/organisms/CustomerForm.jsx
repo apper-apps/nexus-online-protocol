@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react"
-import Button from "@/components/atoms/Button"
-import Input from "@/components/atoms/Input"
+import React, { useEffect, useState } from "react";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
 
 const CustomerForm = ({ initialData, onSubmit, onCancel }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    parentCompany: ""
+const [formData, setFormData] = useState({
+    name_c: "",
+    parent_company_c: ""
   })
-
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData)
+      setFormData({
+        name_c: initialData.name_c || "",
+        parent_company_c: initialData.parent_company_c || ""
+      })
     }
   }, [initialData])
 
@@ -23,6 +25,7 @@ const CustomerForm = ({ initialData, onSubmit, onCancel }) => {
       [name]: value
     }))
     
+    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -33,11 +36,9 @@ const CustomerForm = ({ initialData, onSubmit, onCancel }) => {
 
   const validateForm = () => {
     const newErrors = {}
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Customer name is required"
+    if (!formData.name_c.trim()) {
+      newErrors.name_c = "Customer name is required"
     }
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -49,22 +50,22 @@ const CustomerForm = ({ initialData, onSubmit, onCancel }) => {
     }
   }
 
-  return (
+return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
+      <div>
         <Input
           label="Customer Name"
-          name="name"
-          value={formData.name}
+          name="name_c"
+          value={formData.name_c}
           onChange={handleInputChange}
-          error={errors.name}
+          error={errors.name_c}
           placeholder="Enter customer name"
         />
 
         <Input
           label="Parent Company"
-          name="parentCompany"
-          value={formData.parentCompany}
+          name="parent_company_c"
+          value={formData.parent_company_c}
           onChange={handleInputChange}
           placeholder="Enter parent company (optional)"
         />

@@ -20,7 +20,7 @@ const Customers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingCustomer, setEditingCustomer] = useState(null)
 
-  const loadData = async () => {
+const loadData = async () => {
     try {
       setLoading(true)
       setError("")
@@ -42,8 +42,8 @@ const Customers = () => {
 
     if (searchTerm) {
       filtered = filtered.filter(customer =>
-        customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (customer.parentCompany && customer.parentCompany.toLowerCase().includes(searchTerm.toLowerCase()))
+        customer.name_c?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (customer.parent_company_c && customer.parent_company_c.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     }
 
@@ -90,21 +90,20 @@ const Customers = () => {
     }
   }
 
-  const columns = [
+const columns = [
     { key: "Id", title: "ID" },
-    { key: "name", title: "Customer Name" },
+    { key: "name_c", title: "Customer Name" },
     { 
-      key: "parentCompany", 
+      key: "parent_company_c", 
       title: "Parent Company",
       render: (value) => value || "Independent"
     }
   ]
 
-  // Group customers by parent company for better visualization
   const groupedCustomers = React.useMemo(() => {
     const grouped = {}
     filteredCustomers.forEach(customer => {
-      const parent = customer.parentCompany || "Independent"
+      const parent = customer.parent_company_c || "Independent"
       if (!grouped[parent]) {
         grouped[parent] = []
       }
