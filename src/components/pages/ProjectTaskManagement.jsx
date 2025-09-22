@@ -78,15 +78,15 @@ const transformedData = {
         progress_range_c: projectTaskData.progressRange?.toString() || '0',
         project_tags_c: Array.isArray(projectTaskData.projectTags) 
           ? projectTaskData.projectTags.join(',') 
-          : (projectTaskData.projectTags || ''),
+          : (projectTaskData.projectTags || '').toString(),
         include_risk_assessment_c: projectTaskData.includeRiskAssessment === true 
           ? 'true' 
           : projectTaskData.includeRiskAssessment === false 
           ? 'false' 
-          : (projectTaskData.includeRiskAssessment || 'false'),
+          : (projectTaskData.includeRiskAssessment || 'false').toString(),
         Tags: Array.isArray(projectTaskData.projectTags) 
           ? projectTaskData.projectTags.join(',') 
-          : (projectTaskData.projectTags || '')
+          : (projectTaskData.projectTags || '').toString()
       }
       
       const newProjectTask = await projectTaskService.create(transformedData)
@@ -115,15 +115,15 @@ try {
         progress_range_c: projectTaskData.progressRange?.toString() || '0',
         project_tags_c: Array.isArray(projectTaskData.projectTags) 
           ? projectTaskData.projectTags.join(',') 
-          : (projectTaskData.projectTags || ''),
+          : (projectTaskData.projectTags || '').toString(),
         include_risk_assessment_c: projectTaskData.includeRiskAssessment === true 
           ? 'true' 
           : projectTaskData.includeRiskAssessment === false 
           ? 'false' 
-          : (projectTaskData.includeRiskAssessment || 'false'),
+          : (projectTaskData.includeRiskAssessment || 'false').toString(),
         Tags: Array.isArray(projectTaskData.projectTags) 
           ? projectTaskData.projectTags.join(',') 
-          : (projectTaskData.projectTags || '')
+          : (projectTaskData.projectTags || '').toString()
       }
       const updatedProjectTask = await projectTaskService.update(editingProjectTask.Id, transformedData)
       setProjectTasks(prev => prev.map(task => 
