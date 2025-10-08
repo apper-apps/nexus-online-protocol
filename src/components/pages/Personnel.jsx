@@ -1,23 +1,25 @@
-import React, { useState, useEffect } from "react"
-import { toast } from "react-toastify"
-import Button from "@/components/atoms/Button"
-import SearchBar from "@/components/molecules/SearchBar"
-import FilterDropdown from "@/components/molecules/FilterDropdown"
-import MonthYearSelector from "@/components/molecules/MonthYearSelector"
-import DataTable from "@/components/organisms/DataTable"
-import Modal from "@/components/organisms/Modal"
-import PersonnelForm from "@/components/organisms/PersonnelForm"
-import ApperIcon from "@/components/ApperIcon"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import Empty from "@/components/ui/Empty"
-import { personnelService } from "@/services/api/personnelService"
-import { contractService } from "@/services/api/contractService"
-import { projectService } from "@/services/api/projectService"
+import React, { useEffect, useState } from "react";
+import { filterService } from "@/services/api/filterService";
+import { toast } from "react-toastify";
+import { personnelService } from "@/services/api/personnelService";
+import { contractService } from "@/services/api/contractService";
+import { projectService } from "@/services/api/projectService";
+import ApperIcon from "@/components/ApperIcon";
+import MonthYearSelector from "@/components/molecules/MonthYearSelector";
+import SearchBar from "@/components/molecules/SearchBar";
+import FilterDropdown from "@/components/molecules/FilterDropdown";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import PersonnelForm from "@/components/organisms/PersonnelForm";
+import Modal from "@/components/organisms/Modal";
+import DataTable from "@/components/organisms/DataTable";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
 
 const Personnel = () => {
   const currentDate = new Date()
-  const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear())
+const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear())
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1)
   
   const [personnel, setPersonnel] = useState([])
@@ -29,6 +31,12 @@ const Personnel = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedTypes, setSelectedTypes] = useState([])
   const [selectedWorkplaces, setSelectedWorkplaces] = useState([])
+  
+  const [savedFilters, setSavedFilters] = useState([])
+  const [currentFilterId, setCurrentFilterId] = useState(null)
+  const [showSaveModal, setShowSaveModal] = useState(false)
+  const [filterName, setFilterName] = useState("")
+  const [loadingFilters, setLoadingFilters] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingPersonnel, setEditingPersonnel] = useState(null)
 
@@ -51,11 +59,98 @@ const Personnel = () => {
     }
   }
 
-  useEffect(() => {
+useEffect(() => {
     loadData()
+    loadSavedFilters()
   }, [selectedYear, selectedMonth])
 
-  useEffect(() => {
+  const loadSavedFilters = async () => {
+    const filters = await filterService.getAll()
+    setSavedFilters(filters)
+  }
+
+  const handleSaveFilter = () => {
+    setShowSaveModal(true)
+    setFilterName("")
+  }
+
+  const handleSaveFilterSubmit = async () => {
+    if (!filterName.trim()) {
+      toast.error("Please enter a filter name")
+      return
+    }
+
+    setLoadingFilters(true)
+    const filterData = {
+      searchTerm,
+      selectedTypes,
+      selectedWorkplaces,
+      selectedYear,
+      selectedMonth
+    }
+
+    const result = await filterService.create({
+      name_c: filterName.trim(),
+      filter_data_c: JSON.stringify(filterData)
+    })
+
+    setLoadingFilters(false)
+
+    if (result) {
+      toast.success("Filter saved successfully")
+      setShowSaveModal(false)
+      setFilterName("")
+      setCurrentFilterId(result.Id)
+      await loadSavedFilters()
+    }
+  }
+
+  const handleLoadFilter = async (filterId) => {
+    setLoadingFilters(true)
+    const filter = await filterService.getById(filterId)
+    setLoadingFilters(false)
+
+    if (filter && filter.filter_data_c) {
+      try {
+        const filterData = JSON.parse(filter.filter_data_c)
+        setSearchTerm(filterData.searchTerm || "")
+        setSelectedTypes(filterData.selectedTypes || [])
+        setSelectedWorkplaces(filterData.selectedWorkplaces || [])
+        setSelectedYear(filterData.selectedYear || currentDate.getFullYear())
+        setSelectedMonth(filterData.selectedMonth || currentDate.getMonth() + 1)
+        setCurrentFilterId(filterId)
+        toast.success(`Filter "${filter.name_c}" applied`)
+      } catch (error) {
+        toast.error("Failed to parse filter data")
+      }
+    }
+  }
+
+  const handleDeleteFilter = async (filterId, filterName) => {
+    if (!confirm(`Delete filter "${filterName}"?`)) return
+
+    setLoadingFilters(true)
+    const success = await filterService.delete(filterId)
+    setLoadingFilters(false)
+
+    if (success) {
+      toast.success("Filter deleted successfully")
+      if (currentFilterId === filterId) {
+        setCurrentFilterId(null)
+      }
+      await loadSavedFilters()
+    }
+  }
+
+  const handleClearFilter = () => {
+    setSearchTerm("")
+    setSelectedTypes([])
+    setSelectedWorkplaces([])
+    setCurrentFilterId(null)
+    toast.info("Filters cleared")
+  }
+
+useEffect(() => {
     let filtered = personnel
 
     if (searchTerm) {
@@ -76,7 +171,6 @@ const Personnel = () => {
 
     setFilteredPersonnel(filtered)
   }, [personnel, searchTerm, selectedTypes, selectedWorkplaces])
-
   const handleCreatePersonnel = async (personnelData) => {
     try {
       const newPersonnel = await personnelService.create({
@@ -198,14 +292,86 @@ const Personnel = () => {
       <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/50 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Period</h3>
         <MonthYearSelector
-          selectedYear={selectedYear}
+selectedYear={selectedYear}
           selectedMonth={selectedMonth}
           onYearChange={setSelectedYear}
           onMonthChange={setSelectedMonth}
         />
+        
+        <div className="flex gap-2 items-center ml-auto">
+          <Button
+            variant="outline"
+            onClick={handleSaveFilter}
+            disabled={loadingFilters}
+          >
+            <ApperIcon name="Save" className="h-4 w-4 mr-2" />
+            Save Filter
+          </Button>
+          
+          {savedFilters.length > 0 && (
+            <div className="relative group">
+              <Button
+                variant="outline"
+                className="min-w-[140px] justify-between"
+              >
+                <span className="truncate">
+                  {currentFilterId 
+                    ? savedFilters.find(f => f.Id === currentFilterId)?.name_c || "Load Filter"
+                    : "Load Filter"}
+                </span>
+                <ApperIcon name="ChevronDown" className="h-4 w-4 ml-2" />
+              </Button>
+              
+              <div className="hidden group-hover:block absolute right-0 z-50 mt-2 w-64 bg-white/95 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-xl">
+                <div className="p-3 border-b border-gray-100">
+                  <h4 className="font-medium text-gray-900">Saved Filters</h4>
+                </div>
+                <div className="max-h-64 overflow-y-auto">
+                  {savedFilters.map((filter) => (
+                    <div
+                      key={filter.Id}
+                      className="flex items-center justify-between px-3 py-2 hover:bg-gray-50 cursor-pointer transition-colors duration-150"
+                    >
+                      <button
+                        onClick={() => handleLoadFilter(filter.Id)}
+                        className="flex-1 text-left text-sm text-gray-700"
+                      >
+                        {filter.name_c}
+                        {currentFilterId === filter.Id && (
+                          <span className="ml-2 text-xs text-primary-600">(Active)</span>
+                        )}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteFilter(filter.Id, filter.name_c)
+                        }}
+                        className="ml-2 p-1 text-red-600 hover:text-red-700"
+                      >
+                        <ApperIcon name="Trash2" className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                {currentFilterId && (
+                  <div className="p-3 border-t border-gray-100">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClearFilter}
+                      className="w-full text-gray-600 hover:text-gray-800"
+                    >
+                      Clear Active Filter
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Filters Section */}
+{/* Filters Section */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <SearchBar
@@ -229,7 +395,44 @@ const Personnel = () => {
           />
         </div>
       </div>
-
+      {showSaveModal && (
+        <Modal
+          isOpen={showSaveModal}
+          onClose={() => setShowSaveModal(false)}
+          title="Save Filter"
+        >
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Filter Name
+              </label>
+              <input
+                type="text"
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                placeholder="Enter filter name..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                autoFocus
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowSaveModal(false)}
+                disabled={loadingFilters}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveFilterSubmit}
+                disabled={loadingFilters || !filterName.trim()}
+              >
+                {loadingFilters ? "Saving..." : "Save"}
+              </Button>
+            </div>
+          </div>
+        </Modal>
+)}
       {/* Data Table */}
       {filteredPersonnel.length === 0 && !loading ? (
         <Empty
