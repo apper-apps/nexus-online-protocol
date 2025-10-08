@@ -56,6 +56,16 @@ const renderCellValue = (value, column, row) => {
       return column.render(value, row)
     }
     
+    // Handle lookup field objects from Apper backend
+    if (value && typeof value === 'object' && value.Name) {
+      return value.Name
+    }
+    
+    // Safety fallback for other objects
+    if (value && typeof value === 'object') {
+      return JSON.stringify(value)
+    }
+    
     return value || "-"
   }
 
